@@ -1,24 +1,21 @@
-# Colyseus Matchmaking System
+# Kart Server
 
-A simple matchmaking system built with Colyseus for multiplayer games.
+multiplayer racing game server
 
 ## Quick Start
 
 1. Install dependencies:
   
   ```bash
-  npm install
+  yarn install
   ```
 
 2. Run the server:
 
   ```bash
-  npx ts-node index.ts
+  yarn run dev
   ```
-Server runs at `ws://localhost:2567`
 
-3. Run the test script:
-  
-  ```bash
-  npx ts-node test.ts
-  ```
+Server runs at `http://localhost:2567`
+
+visit `http://localhost:2567/index.html` to see the demo
