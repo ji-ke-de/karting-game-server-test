@@ -39,11 +39,17 @@
     <script>
 
       var client = new Colyseus.Client("ws://localhost:2567");
+      const playerAppearances = new Map();
 
       var room;
-      client.joinOrCreate("kart").then((room_instance) => {
+      client.joinOrCreate("kart",{ 
+        name: "Player 1", 
+        appearance: { shoes: "default", car: "default" }
+      }).then((room_instance) => {
         room = room_instance;
-
+        room.onMessage("player_joined", (data) => {
+          playerAppearances.set(data.sessionId, data.appearance);
+        });
         var players = {};
         var colors = ["red", "green", "yellow", "blue", "cyan", "magenta"];
 

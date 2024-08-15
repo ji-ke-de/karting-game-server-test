@@ -24,8 +24,14 @@ export class KartRoom extends Room<State> {
   //     return true;
   // }
 
-  onJoin(client: Client) {
+  onJoin(client: Client, options: { name: string; appearance: any; }) {
     console.log(client.sessionId, "joined!");
+    this.broadcast("player_joined", {
+      sessionId: client.sessionId,
+      name: options.name,
+      appearance: options.appearance || { shoes: "default", car: "default" }
+    }, { except: client });
+
     this.state.createPlayer(client.sessionId);
   }
 

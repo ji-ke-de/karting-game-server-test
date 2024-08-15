@@ -6,6 +6,9 @@ export class Player extends Schema {
 
   @type("number")
   y = Math.floor(Math.random() * 400);
+
+  @type("number")
+  z = 0;
 }
 
 export class State extends Schema {
@@ -27,6 +30,8 @@ export class State extends Schema {
       this.players.get(sessionId)!.x += movement.x * 10;
     } else if (movement.y) {
       this.players.get(sessionId)!.y += movement.y * 10;
+    } else if (movement.z) {
+      this.players.get(sessionId)!.z += movement.z * 10;
     }
   }
 }
