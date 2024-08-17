@@ -16,6 +16,5 @@ multiplayer racing game server
   yarn run dev
   ```
 
-Server runs at `http://localhost:2567`
 
-visit `http://localhost:2567/index.html` to see the demo
+visit `http://localhost:2567/playground` to see the demo
