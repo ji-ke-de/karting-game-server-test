@@ -1,13 +1,13 @@
 import { Room, Client } from "colyseus";
-import { State } from "./KartRoomState";
+import { KartRoomState } from "./schema/KartRoomState";
 
-export class KartRoom extends Room<State> {
+export class KartRoom extends Room<KartRoomState> {
   maxClients = 5;
 
   onCreate(options: any) {
     console.log("KartRoom created!", options);
 
-    this.setState(new State());
+    this.setState(new KartRoomState());
 
     this.onMessage("move", (client, data) => {
       console.log(
@@ -19,10 +19,6 @@ export class KartRoom extends Room<State> {
       this.state.movePlayer(client.sessionId, data);
     });
   }
-
-  // onAuth(client, options, req) {
-  //     return true;
-  // }
 
   onJoin(client: Client, options: { name: string; appearance: any; }) {
     console.log(client.sessionId, "joined!");
