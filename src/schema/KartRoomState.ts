@@ -1,13 +1,13 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class PlayerState extends Schema {
-  @type("number") xPos: number = 0; // x position
-  @type("number") yPos: number = 0; // y position
-  @type("number") zPos: number = 0; // z position
-  @type("number") xRot: number = 0; // x rotation
-  @type("number") yRot: number = 0; // y rotation
-  @type("number") zRot: number = 0; // z rotation
-  @type("number") wRot: number = 0; // w rotation
+  @type("number") x: number = 0; // x position
+  @type("number") y: number = 0; // y position
+  @type("number") z: number = 0; // z position
+  @type("number") rotX: number = 0; // x rotation
+  @type("number") rotY: number = 0; // y rotation
+  @type("number") rotZ: number = 0; // z rotation
+  @type("number") rotW: number = 0; // w rotation
   @type("string") name = "Unknown"; // player name
 }
 
@@ -28,14 +28,14 @@ export class KartRoomState extends Schema {
   movePlayer(sessionId: string, movement: any) {
     const player = this.players.get(sessionId);
     if (player) {
-      player.xPos += movement.x;
-      player.yPos += movement.y;
-      player.zPos += movement.z;
+      player.x += movement.x;
+      player.y += movement.y;
+      player.z += movement.z;
 
-      player.xRot = movement.xRot;
-      player.yRot = movement.yRot;
-      player.zRot = movement.zRot;
-      player.wRot = movement.wRot;
+      player.rotX = movement.rotX;
+      player.rotY = movement.rotY;
+      player.rotZ = movement.rotZ;
+      player.rotW = movement.rotW;
 
       // this.players.set(sessionId, player);
     }
