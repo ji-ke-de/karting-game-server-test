@@ -1,16 +1,26 @@
 import { Room, Client } from "colyseus";
 import { KartRoomState } from "./schema/KartRoomState";
-
+import { ContractAPI } from "./utils/ContractAPI";
+import * as fs from 'fs';
 export class KartRoom extends Room<KartRoomState> {
   maxClients = 4;
   gameStartTimeout: NodeJS.Timeout | null = null;
   gameEndTimeout: NodeJS.Timeout | null = null;
+  contractApi: ContractAPI | null = null;
 
 
-  onCreate(options: any) {
+  async onCreate(options: any) {
     console.log("KartRoom created!", options);
 
     this.setState(new KartRoomState());
+    const abi = JSON.parse(fs.readFileSync('/Users/liyf/project/GameScore/target/ink/GameScore.json', 'utf8'));
+
+    this.contractApi = new ContractAPI(
+      'ws://localhost:9944', // Substrate 节点 WebSocket 地址
+      '5C8zF2Nb5n4yoCxe5whGi3jPJDiag5aUKLH3sDkdVsLEseWP', // 你的合约地址
+      abi // 你的合约 ABI
+    );
+    await this.contractApi.init();
 
     this.onMessage("move", (client, data) => {
       console.log(
@@ -37,6 +47,16 @@ export class KartRoom extends Room<KartRoomState> {
     });
 
   }
+
+  async updateContractScore(score: number) {
+    try {
+      await this.contractApi!.updateScore(score);
+      console.log(`Updated contract score: ${score}`);
+    } catch (error) {
+      console.error(`Failed to update contract score:`, error);
+    }
+  }
+
 
   onJoin(client: Client, options: { name: string; appearance: any; }) {
     console.log(client.sessionId, "joined!");
@@ -67,7 +87,7 @@ export class KartRoom extends Room<KartRoomState> {
     }, 60000);
   }
 
-  endGame() {
+  async endGame() {
     if (this.gameEndTimeout) {
       clearTimeout(this.gameEndTimeout);
     }
@@ -82,6 +102,11 @@ export class KartRoom extends Room<KartRoomState> {
         score: player.score
       }))
       .sort((a, b) => b.score - a.score);
+
+       // 更新每个玩家的合约分数
+    for (const result of results) {
+      await this.updateContractScore(result.score);
+    }
 
     this.broadcast("gameOver", { results });
   }
