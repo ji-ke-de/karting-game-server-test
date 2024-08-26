@@ -14,7 +14,8 @@
     "@colyseus/schema": "^2.0.34",
     "@polkadot/api": "^12.4.2",
     "@polkadot/api-contract": "^12.4.2",
-    "@polkadot/types": "^12.4.2",
+    "@polkadot/util-crypto": "^13.0.2",
+    "@scio-labs/use-inkathon": "^0.11.0",
     "colyseus": "^0.15.17",
     "colyseus.js": "^0.15.25",
     "express": "^4.19.2"
