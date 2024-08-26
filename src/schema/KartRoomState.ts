@@ -28,9 +28,9 @@ export class KartRoomState extends Schema {
   movePlayer(sessionId: string, movement: any) {
     const player = this.players.get(sessionId);
     if (player) {
-      player.x += movement.x;
-      player.y += movement.y;
-      player.z += movement.z;
+      player.x = movement.x;
+      player.y = movement.y;
+      player.z = movement.z;
 
       player.rotX = movement.rotX;
       player.rotY = movement.rotY;
