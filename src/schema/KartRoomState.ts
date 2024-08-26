@@ -9,6 +9,11 @@ export class PlayerState extends Schema {
   @type("number") rotZ: number = 0; // z rotation
   @type("number") rotW: number = 0; // w rotation
   @type("string") name = "Unknown"; // player name
+  @type("string") appearance: string="default";
+  @type("boolean") ready: boolean = false;
+  @type("boolean") finished: boolean = false;
+  @type("number") finishTime: number = 0;
+  @type("number") score: number = 0;
 }
 
 export class KartRoomState extends Schema {
@@ -16,9 +21,14 @@ export class KartRoomState extends Schema {
   players: MapSchema<PlayerState> = new MapSchema<PlayerState>();
 
   @type("string") status: string = "waiting"; // waiting, playing, finished
+  @type("number") startTime: number = 0;
+  @type("number") finishedCount: number = 0;
 
-  createPlayer(sessionId: string) {
-    this.players.set(sessionId, new PlayerState());
+  createPlayer(sessionId: string, name: string, appearance: string) {
+    const player = new PlayerState();
+    player.name = name;
+    player.appearance = appearance;
+    this.players.set(sessionId, player);
   }
 
   removePlayer(sessionId: string) {
@@ -38,6 +48,35 @@ export class KartRoomState extends Schema {
       player.rotW = movement.rotW;
 
       // this.players.set(sessionId, player);
+    }
+  }
+
+  setPlayerReady(sessionId: string) {
+    const player = this.players.get(sessionId);
+    if (player) {
+      player.ready = true;
+    }
+  }
+
+  allPlayersReady(maxClients: number) {
+    const players = Array.from(this.players.values());
+    console.log("players", players);
+    return players.length === maxClients && players.every(player => player.ready);
+  }
+  playerFinished(sessionId: string) {
+    const player = this.players.get(sessionId);
+    if (player && !player.finished) {
+      player.finished = true;
+      player.finishTime = Date.now() - this.startTime;
+      this.finishedCount++;
+
+      // Assign scores based on finish order
+      switch (this.finishedCount) {
+        case 1: player.score = 10; break;
+        case 2: player.score = 8; break;
+        case 3: player.score = 6; break;
+        case 4: player.score = 5; break;
+      }
     }
   }
 }
