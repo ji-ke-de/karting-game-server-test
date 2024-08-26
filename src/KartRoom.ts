@@ -42,6 +42,9 @@ export class KartRoom extends Room<KartRoomState> {
     console.log(client.sessionId, "joined!");
 
     this.state.createPlayer(client.sessionId, options.name, options.appearance);
+    if(this.clients.length === this.maxClients){
+      this.broadcast("ready_check");      
+    }
   }
 
   onLeave(client: { sessionId: string }) {
