@@ -1,3 +1,6 @@
 {
-  "livePreview.defaultPreviewPath": "/client/index.html"
+  "livePreview.defaultPreviewPath": "/client/index.html",
+  "cSpell.words": [
+    "karting"
+  ]
 }

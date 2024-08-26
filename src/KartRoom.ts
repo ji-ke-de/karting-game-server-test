@@ -1,6 +1,6 @@
 import { Room, Client } from "colyseus";
 import { KartRoomState } from "./schema/KartRoomState";
-import { ContractAPI } from "./utils/ContractAPI";
+import { ContractAPI } from "./utils/contractAPI";
 import * as fs from 'fs';
 export class KartRoom extends Room<KartRoomState> {
   maxClients = 2;
