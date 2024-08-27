@@ -1,18 +1,12 @@
-import {
-  contractQuery,
-  contractTx,
-  getBalance,
-  getDeploymentContract,
-  rococo,
-  transferBalance,
-} from "@scio-labs/use-inkathon";
-import fs from "fs";
-// const  CONTRACT_METADATA = require("./GameScore.json");
 
-// import CONTRACT_METADATA from "./GameScore.json";
-import { initPolkadotJs } from "./initPolkadotJs";
+import fs from "fs";
+
+import { initPolkadotJs } from "./init";
 import { ContractPromise } from "@polkadot/api-contract";
 import { ApiPromise } from "@polkadot/api";
+import { getDeploymentContract } from "./getDeployment";
+import path from "path";
+import { contractQuery, contractTx } from "./contractCall";
 type IKeyringPair = any;
 
 export class ContractAPI {
@@ -25,13 +19,13 @@ export class ContractAPI {
   constructor() {}
 
   async init() {
-    const CONTRACT_METADATA = fs.readFileSync("./GameScore.json", "utf8");
-    const chainId = rococo.network;
+    const filePath = path.resolve(process.cwd(), "src/utils/GameScore.json");
+
+    const CONTRACT_METADATA = fs.readFileSync(filePath, "utf8");
+    const chainId = "contracts";
     const accountUri = "//Alice";
     const {
       api,
-      decimals,
-      symbol,
       keyring,
       account: alice,
     } = await initPolkadotJs(chainId, accountUri);
@@ -39,13 +33,14 @@ export class ContractAPI {
     this.api = api;
     this.bob = keyring.addFromUri("//Bob");
     this.alice = alice;
+   
     const MNEMONIC =
       "fine undo assault symbol achieve emerge shed half mystery metal describe shop";
     this.pair = keyring.createFromUri(MNEMONIC);
     const getDeployments = [
       {
         contractId: "kartingGame",
-        networkId: rococo.network,
+        networkId: 'contracts',
         abi: CONTRACT_METADATA,
         address: "5DFzDyFTrHdVnDStYNj5RNGweGBkcp2UDmVGzJCQjhS6Kmep",
       },
@@ -79,6 +74,11 @@ export class ContractAPI {
   }
 
   async getRoomScore(roomId: string) {
+    console.log("roomId", roomId);
+    console.log("a", this.alice.address);
+    console.log("b", this.bob.address);
+    console.log("p", this.pair.address);
+    console.log("c", this.contract);
     if (this.api && this.alice && this.pair && this.contract) {
       const { gasRequired, storageDeposit, result, output } =
         await contractQuery(
@@ -102,7 +102,7 @@ export class ContractAPI {
 async function main() {
   const contractApi = new ContractAPI();
   await contractApi.init();
-  contractApi.updateScore("1", "sss", 10);
+  // contractApi.updateScore("1", "sss", 10);
   contractApi.getRoomScore("1");
 
 }

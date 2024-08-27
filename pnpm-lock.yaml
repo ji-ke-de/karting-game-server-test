@@ -20,6 +20,9 @@ dependencies:
   '@polkadot/types':
     specifier: ^12.4.2
     version: 12.4.2
+  '@polkadot/util':
+    specifier: ^13.0.2
+    version: 13.0.2
   '@polkadot/util-crypto':
     specifier: ^13.0.2
     version: 13.0.2(@polkadot/util@13.0.2)
