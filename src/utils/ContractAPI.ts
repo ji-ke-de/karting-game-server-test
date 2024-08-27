@@ -41,7 +41,7 @@ export class ContractAPI {
         contractId: "kartingGame",
         networkId: "contracts",
         abi: CONTRACT_METADATA,
-        address: "5DFzDyFTrHdVnDStYNj5RNGweGBkcp2UDmVGzJCQjhS6Kmep",
+        address: "5GD5pCToQ8Z1AqXoko7zEqCXEjmGd9wW5VEZj31NV2SCYVo7",
       },
     ];
 
@@ -56,16 +56,15 @@ export class ContractAPI {
 
   async updateScore(roomId: string, player: string, score: number) {
     if (this.api && this.pair && this.contract) {
-      console.log("roomId", roomId);
-      
+  
       try {
         const { result } = await contractTx(
           this.api,
           this.pair,
           this.contract,
-          "flip",
+          "updateScore",
           {},
-          []
+          [roomId, player, score]
         );
         if (result) {
           console.log("Success", result.toHuman());
@@ -98,12 +97,3 @@ export class ContractAPI {
     }
   }
 }
-
-async function main() {
-  const contractApi = new ContractAPI();
-  await contractApi.init();
-  // await contractApi.updateScore("1", "sss", 10);
-  await contractApi.getRoomScore("www");
-}
-
-main();

@@ -1,7 +1,6 @@
 import { Room, Client } from "colyseus";
 import { KartRoomState } from "./schema/KartRoomState";
 import { ContractAPI } from "./utils/ContractAPI";
-import * as fs from 'fs';
 export class KartRoom extends Room<KartRoomState> {
   maxClients = 2;
   gameStartTimeout: NodeJS.Timeout | null = null;
@@ -13,10 +12,9 @@ export class KartRoom extends Room<KartRoomState> {
     console.log("KartRoom created!", options);
 
     this.setState(new KartRoomState());
-    const abi = JSON.parse(fs.readFileSync('/Users/liyf/project/GameScore/target/ink/GameScore.json', 'utf8'));
+    this.contractApi = new ContractAPI();
+    await this.contractApi!.init();
 
-    
-    this.updateContractScore(this.roomId, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10);
 
     this.onMessage("move", (client, data) => {
       console.log(
@@ -36,6 +34,7 @@ export class KartRoom extends Room<KartRoomState> {
     });
 
     this.onMessage("finished", (client) => {
+      console.log("finished!", client);
       this.state.playerFinished(client.sessionId);
       if (this.state.finishedCount === this.maxClients) {
         this.endGame();
