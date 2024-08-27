@@ -7,13 +7,13 @@ import {
   transferBalance,
 } from "@scio-labs/use-inkathon";
 import fs from "fs";
-const  CONTRACT_METADATA = require("./GameScore.json");
+// const  CONTRACT_METADATA = require("./GameScore.json");
 
 // import CONTRACT_METADATA from "./GameScore.json";
 import { initPolkadotJs } from "./initPolkadotJs";
 import { ContractPromise } from "@polkadot/api-contract";
-import { IKeyringPair } from "@polkadot/types/types";
 import { ApiPromise } from "@polkadot/api";
+type IKeyringPair = any;
 
 export class ContractAPI {
   private contract: ContractPromise | null = null;

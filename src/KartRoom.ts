@@ -15,12 +15,7 @@ export class KartRoom extends Room<KartRoomState> {
     this.setState(new KartRoomState());
     const abi = JSON.parse(fs.readFileSync('/Users/liyf/project/GameScore/target/ink/GameScore.json', 'utf8'));
 
-    this.contractApi = new ContractAPI(
-      'ws://localhost:9944', // Substrate 节点 WebSocket 地址
-      '5HeFTGpLWe5XcDZgR3Y5VPdyjMZWbKAEJmsh3hs1nv9UHf2v', // 你的合约地址
-      abi // 你的合约 ABI
-    );
-    await this.contractApi.init();
+    
     this.updateContractScore(this.roomId, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10);
 
     this.onMessage("move", (client, data) => {
