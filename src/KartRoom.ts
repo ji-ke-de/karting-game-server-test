@@ -34,7 +34,7 @@ export class KartRoom extends Room<KartRoomState> {
     });
 
     this.onMessage("finished", (client) => {
-      console.log("finished!", client);
+      console.log("finished!sss", client.state);
       this.state.playerFinished(client.sessionId);
       if (this.state.finishedCount === this.maxClients) {
         this.endGame();
@@ -46,7 +46,7 @@ export class KartRoom extends Room<KartRoomState> {
   async updateContractScore(roomId: string, player: string,score: number) {
     try {
 
-      await this.contractApi!.getRoomScore(roomId);
+      await this.contractApi!.updateScore(roomId, player, score);
     } catch (error) {
       console.error(`Failed to update contract score:`, error);
     }
