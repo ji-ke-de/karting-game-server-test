@@ -1,4 +1,3 @@
-
 import fs from "fs";
 
 import { initPolkadotJs } from "./init";
@@ -33,14 +32,14 @@ export class ContractAPI {
     this.api = api;
     this.bob = keyring.addFromUri("//Bob");
     this.alice = alice;
-   
+
     const MNEMONIC =
       "fine undo assault symbol achieve emerge shed half mystery metal describe shop";
     this.pair = keyring.createFromUri(MNEMONIC);
     const getDeployments = [
       {
         contractId: "kartingGame",
-        networkId: 'contracts',
+        networkId: "contracts",
         abi: CONTRACT_METADATA,
         address: "5DFzDyFTrHdVnDStYNj5RNGweGBkcp2UDmVGzJCQjhS6Kmep",
       },
@@ -57,28 +56,29 @@ export class ContractAPI {
 
   async updateScore(roomId: string, player: string, score: number) {
     if (this.api && this.pair && this.contract) {
-      const {result} = await contractTx(
-        this.api,
-        this.pair,
-        this.contract,
-        "updateScore",
-        {},
-        [roomId, player, score]
-      );
-      if (result) {
-        console.log("Success", result.toHuman());
-      } else {
-        console.error("Error", result);
+      console.log("roomId", roomId);
+      
+      try {
+        const { result } = await contractTx(
+          this.api,
+          this.pair,
+          this.contract,
+          "flip",
+          {},
+          []
+        );
+        if (result) {
+          console.log("Success", result.toHuman());
+        } else {
+          console.error("Error", result);
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   }
 
   async getRoomScore(roomId: string) {
-    console.log("roomId", roomId);
-    console.log("a", this.alice.address);
-    console.log("b", this.bob.address);
-    console.log("p", this.pair.address);
-    console.log("c", this.contract);
     if (this.api && this.alice && this.pair && this.contract) {
       const { gasRequired, storageDeposit, result, output } =
         await contractQuery(
@@ -102,9 +102,8 @@ export class ContractAPI {
 async function main() {
   const contractApi = new ContractAPI();
   await contractApi.init();
-  // contractApi.updateScore("1", "sss", 10);
-  contractApi.getRoomScore("1");
-
+  // await contractApi.updateScore("1", "sss", 10);
+  await contractApi.getRoomScore("www");
 }
 
 main();

@@ -29,7 +29,6 @@ export const getDeploymentContract = (
   contractId: string,
   networkId: string,
 ) => {
-  console.log('deployments', deployments, contractId, networkId)
   const deployment = getDeployment(deployments || [], contractId, networkId)
 
   if (!deployment) return undefined
