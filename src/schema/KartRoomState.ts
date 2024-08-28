@@ -9,8 +9,14 @@ export class PlayerState extends Schema {
   @type("number") rotZ: number = 0; // z rotation
   @type("number") rotW: number = 0; // w rotation
   @type("string") name = "Unknown"; // player name
-  @type("string") appearance: string="default";
+  @type("string") hat: string="default";
+  @type("string") hair: string="default";
+  @type("string") dress: string="default";
+  @type("string") gloves: string="default";
+  @type("string") pants: string="default";
+  @type("string") shoes: string="default";
   @type("boolean") ready: boolean = false;
+  @type("boolean") isMapLoaded: boolean = false;
   @type("boolean") finished: boolean = false;
   @type("number") finishTime: number = 0;
   @type("number") score: number = 0;
@@ -27,7 +33,7 @@ export class KartRoomState extends Schema {
   createPlayer(sessionId: string, name: string, appearance: string) {
     const player = new PlayerState();
     player.name = name;
-    player.appearance = appearance;
+    // player.appearance = appearance;
     this.players.set(sessionId, player);
   }
 
@@ -58,11 +64,25 @@ export class KartRoomState extends Schema {
     }
   }
 
+  setPlayerMapLoaded(sessionId: string){
+    const player = this.players.get(sessionId);
+    if (player) {
+      player.isMapLoaded = true;
+    }
+  }
+
   allPlayersReady(maxClients: number) {
     const players = Array.from(this.players.values());
     console.log("players", players);
     return players.length === maxClients && players.every(player => player.ready);
   }
+
+  allPlayersMapLoaded(maxClients: number){    
+    const players = Array.from(this.players.values());
+    console.log("players", players);
+    return players.length === maxClients && players.every(player => player.isMapLoaded);
+  }
+
   playerFinished(sessionId: string) {
     const player = this.players.get(sessionId);
     if (player && !player.finished) {

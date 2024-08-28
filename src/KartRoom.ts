@@ -23,16 +23,26 @@ export class KartRoom extends Room<KartRoomState> {
     });
 
     this.onMessage("ready", (client) => {
+      this.broadcast("ready_report",client.sessionId,{except: client});
       this.state.setPlayerReady(client.sessionId);
       if (this.state.allPlayersReady(this.maxClients)) {
-        this.startGameCountdown();
+        this.broadcast("load_map");
       }
     });
+
+    
 
     this.onMessage("finished", (client) => {
       this.state.playerFinished(client.sessionId);
       if (this.state.finishedCount === this.maxClients) {
         this.endGame();
+      }
+    });
+
+    this.onMessage("map_loaded",(client)=>{
+      this.state.setPlayerMapLoaded(client.sessionId);
+      if(this.state.allPlayersMapLoaded(this.maxClients)){
+        this.startGameCountdown();
       }
     });
 
@@ -53,7 +63,7 @@ export class KartRoom extends Room<KartRoomState> {
   }
   startGameCountdown() {
     this.state.status = "loading";
-    this.broadcast("loading");
+    this.broadcast("start_countdown");
     
     this.gameStartTimeout = setTimeout(() => {
       this.startGame();
