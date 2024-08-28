@@ -20,6 +20,7 @@ export class PlayerState extends Schema {
   @type("boolean") finished: boolean = false;
   @type("number") finishTime: number = 0;
   @type("number") score: number = 0;
+  @type("string") address: string = '';
 }
 
 export class KartRoomState extends Schema {
@@ -30,10 +31,11 @@ export class KartRoomState extends Schema {
   @type("number") startTime: number = 0;
   @type("number") finishedCount: number = 0;
 
-  createPlayer(sessionId: string, name: string, appearance: string) {
+  createPlayer(address:string, sessionId: string, name: string, appearance: string) {
     const player = new PlayerState();
     player.name = name;
-    // player.appearance = appearance;
+    player.appearance = appearance;
+    player.address = address;
     this.players.set(sessionId, player);
   }
 
@@ -73,7 +75,6 @@ export class KartRoomState extends Schema {
 
   allPlayersReady(maxClients: number) {
     const players = Array.from(this.players.values());
-    console.log("players", players);
     return players.length === maxClients && players.every(player => player.ready);
   }
 

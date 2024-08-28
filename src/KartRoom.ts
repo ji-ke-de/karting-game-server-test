@@ -1,16 +1,20 @@
 import { Room, Client } from "colyseus";
 import { KartRoomState } from "./schema/KartRoomState";
-
+import { ContractAPI } from "./utils/ContractAPI";
 export class KartRoom extends Room<KartRoomState> {
-  maxClients = 4;
+  maxClients = 2;
   gameStartTimeout: NodeJS.Timeout | null = null;
   gameEndTimeout: NodeJS.Timeout | null = null;
+  contractApi: ContractAPI | null = null;
 
 
-  onCreate(options: any) {
+  async onCreate(options: any) {
     console.log("KartRoom created!", options);
 
     this.setState(new KartRoomState());
+    this.contractApi = new ContractAPI();
+    await this.contractApi!.init();
+
 
     this.onMessage("move", (client, data) => {
       console.log(
@@ -33,6 +37,7 @@ export class KartRoom extends Room<KartRoomState> {
     
 
     this.onMessage("finished", (client) => {
+      console.log("finished!sss", client.state);
       this.state.playerFinished(client.sessionId);
       if (this.state.finishedCount === this.maxClients) {
         this.endGame();
@@ -48,13 +53,29 @@ export class KartRoom extends Room<KartRoomState> {
 
   }
 
-  onJoin(client: Client, options: { name: string; appearance: any; }) {
-    console.log(client.sessionId, "joined!");
+  async updateContractScore(roomId: string, player: string,score: number) {
+    try {
 
+      await this.contractApi!.updateScore(roomId, player, score);
+    } catch (error) {
+      console.error(`Failed to update contract score:`, error);
+    }
+  }
+
+
+  onJoin(client: Client, options: { address: string; name: string; appearance: any; }) {
+    console.log(client.sessionId, "joined!", options);
+    if (options.address) {
+      this.state.createPlayer(options.address, client.sessionId, options.name, options.appearance);
+    }
+
+<<<<<<< HEAD
     this.state.createPlayer(client.sessionId, options.name, options.appearance);
     if(this.clients.length === this.maxClients){
       this.broadcast("ready_check");      
     }
+=======
+>>>>>>> cc9a98a13e5b62ba4f90bfedb7ba952f61285a88
   }
 
   onLeave(client: { sessionId: string }) {
@@ -80,7 +101,7 @@ export class KartRoom extends Room<KartRoomState> {
     }, 60000);
   }
 
-  endGame() {
+  async endGame() {
     if (this.gameEndTimeout) {
       clearTimeout(this.gameEndTimeout);
     }
@@ -90,11 +111,19 @@ export class KartRoom extends Room<KartRoomState> {
       .map(([sessionId, player]) => ({
         sessionId,
         name: player.name,
+        address: player.address,
         finished: player.finished,
         finishTime: player.finishTime,
         score: player.score
       }))
       .sort((a, b) => b.score - a.score);
+
+       // 更新每个玩家的合约分数
+    for (const result of results) {
+      console.log(this.roomId);
+      console.log(`Updating contract score for ${result.address}: ${result.score}`);
+      await this.updateContractScore(this.roomId, result.address, result.score);
+    }
 
     this.broadcast("gameOver", { results });
   }
