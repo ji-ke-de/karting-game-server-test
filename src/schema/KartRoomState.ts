@@ -1,5 +1,14 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
 
+export interface Appearance{
+  hat: string;
+  hair: string;
+  dress: string;
+  gloves: string;
+  pants: string;
+  shoes: string;
+}
+
 export class PlayerState extends Schema {
   @type("number") x: number = 0; // x position
   @type("number") y: number = 0; // y position
@@ -31,10 +40,17 @@ export class KartRoomState extends Schema {
   @type("number") startTime: number = 0;
   @type("number") finishedCount: number = 0;
 
-  createPlayer(address:string, sessionId: string, name: string, appearance: string) {
+  createPlayer(address:string, sessionId: string, name: string, appearance: Appearance) {
     const player = new PlayerState();
     player.name = name;
-    player.appearance = appearance;
+    
+    player.hat = appearance.hat
+    player.hair = appearance.hair
+    player.dress = appearance.dress
+    player.gloves = appearance.gloves
+    player.pants = appearance.pants
+    player.shoes = appearance.shoes
+
     player.address = address;
     this.players.set(sessionId, player);
   }

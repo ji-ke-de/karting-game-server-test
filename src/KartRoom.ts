@@ -1,5 +1,5 @@
 import { Room, Client } from "colyseus";
-import { KartRoomState } from "./schema/KartRoomState";
+import { Appearance, KartRoomState } from "./schema/KartRoomState";
 import { ContractAPI } from "./utils/ContractAPI";
 export class KartRoom extends Room<KartRoomState> {
   maxClients = 2;
@@ -63,19 +63,24 @@ export class KartRoom extends Room<KartRoomState> {
   }
 
 
-  onJoin(client: Client, options: { address: string; name: string; appearance: any; }) {
+  onJoin(client: Client, options: { address: string; name: string; }) {
     console.log(client.sessionId, "joined!", options);
-    if (options.address) {
-      this.state.createPlayer(options.address, client.sessionId, options.name, options.appearance);
-    }
+    //TODO : user data like name and apearance must loaded from blockchain or database
 
-<<<<<<< HEAD
-    this.state.createPlayer(client.sessionId, options.name, options.appearance);
+    this.state.createPlayer(options.address, client.sessionId, options.name, {
+      dress: "default",
+      gloves: "default",
+      hair: "default",
+      hat: "default",
+      pants: "default",
+      shoes: "default",
+    } );
+
+    //TODO : send the user a string to sign and verify it, and return access token and refresh token (authenticate using jwt)
+
     if(this.clients.length === this.maxClients){
       this.broadcast("ready_check");      
     }
-=======
->>>>>>> cc9a98a13e5b62ba4f90bfedb7ba952f61285a88
   }
 
   onLeave(client: { sessionId: string }) {
