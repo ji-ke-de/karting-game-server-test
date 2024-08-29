@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@colyseus/monitor": "^0.15.7",
     "@colyseus/playground": "^0.15.12",
     "@colyseus/schema": "^2.0.34",
     "@polkadot/api": "^12.4.2",
